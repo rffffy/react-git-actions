@@ -1,9 +1,9 @@
 name: CI
 on:
   pull_request:
-    branches: [develop, master]
+    branches: [develop, main]
   push:
-    branches: [develop, master]
+    branches: [develop, main]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -43,12 +43,12 @@ jobs:
           name: build
           path: build
       - name: ZIP Assets
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           zip -r build.zip ./build
           zip -r coverage.zip ./coverage
       - name: Create a Release
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -56,10 +56,10 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
         run: npx surge --project ./build --domain womanly-squirrel.surge.sh
       - name: Deploy to Production
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: npx surge --project ./build --domain evasive-twist.surge.sh
       - name: Upload Coverage Reports
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: npx codecov
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
